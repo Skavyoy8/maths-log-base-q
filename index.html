@@ -221,7 +221,7 @@ footer p{margin:.5rem 0 0}
   <div class="graticule" aria-hidden="true"></div>
   <p class="kicker">Maths CIEL · DS du 23 septembre</p>
   <h1>Logarithme décimal &amp; logarithme de base q</h1>
-  <p class="lede">De la base 10 à une base quelconque : <b>log<sub>q</sub>(b) = log(b) / log(q)</b>. Objectif : résoudre q<sup>x</sup> = b et dater un seuil.</p>
+  <p class="lede">De la base 10 à une base quelconque : <b>log<sub>q</sub>(b) = log(b) / log(q)</b>. Objectif : résoudre q<sup>x</sup> = b et trouver au bout de combien de temps un seuil est franchi.</p>
 </header>
 
 <nav class="scale" aria-label="Progression dans le chapitre">
@@ -273,9 +273,9 @@ const ETAPES = [
     {type:"num",
      q:"Calcule <span class=\"m\">log(1)</span>.", note:"attention, ce n’est pas 1",
      rep:0, tol:0.001,
-     indice:"N’importe quel nombre à la puissance 0 vaut 1.",
+     indice:"Tout nombre (sauf 0) à la puissance 0 vaut 1. Et 10 alors ?",
      sol:["10<sup>0</sup> = 1","log(1) = 0",
-          "<span class=\"why\">Vrai dans toutes les bases, on le réutilise à l’étape 4.</span>"]},
+          "<span class=\"why\">Vrai dans toutes les bases : on s’en ressert dès l’étape 2.</span>"]},
 
     {type:"num",
      q:"Calcule <span class=\"m\">log(0,01)</span>.", note:"sans calculatrice", neg:true,
@@ -285,15 +285,25 @@ const ETAPES = [
           "<span class=\"why\">Un nombre plus petit que 1 a toujours un log négatif.</span>"]},
 
     {type:"qcm",
+     q:"Parmi ces trois calculs, lequel est <b>impossible</b> ?",
+     choix:["log(−3)","log(0,3)","log(300)"], bonne:0,
+     indice:"Il faudrait un exposant x tel que 10<sup>x</sup> donne ce nombre. Une puissance de 10 peut-elle être négative ?",
+     sol:["10<sup>x</sup> est toujours strictement positif","donc log(b) n’existe que si b &gt; 0",
+          "log(−3) est impossible, log(0) aussi",
+          "<span class=\"why\">Vrai dans toutes les bases : jamais de log d’un nombre négatif ou nul.</span>"]},
+
+    {type:"qcm",
      q:"Entre quels entiers se trouve <span class=\"m\">log(45)</span> ?",
      choix:["0 et 1","1 et 2","2 et 3"], bonne:1,
      indice:"45 est entre 10 et 100.",
-     sol:["10 &lt; 45 &lt; 100","10<sup>1</sup> &lt; 45 &lt; 10<sup>2</sup>","donc 1 &lt; log(45) &lt; 2"]},
+     sol:["10 &lt; 45 &lt; 100","10<sup>1</sup> &lt; 45 &lt; 10<sup>2</sup>",
+          "plus un nombre est grand, plus son log est grand : l’ordre est conservé",
+          "donc 1 &lt; log(45) &lt; 2"]},
 
     {type:"num",
      q:"Donne <span class=\"m\">log(45)</span> à la calculatrice.", note:"arrondi au centième",
      rep:1.65, tol:0.005,
-     indice:"LOG(45) = 1,653… à arrondir à deux chiffres après la virgule.",
+     indice:"Touche <kbd>LOG</kbd>, puis 45, puis la parenthèse fermante. Tu dois tomber entre 1 et 2 : garde deux chiffres après la virgule.",
      sol:["LOG(45) = 1,65321…","log(45) ≈ 1,65",
           "<span class=\"why\">Bien entre 1 et 2 : l’encadrement est respecté.</span>"]}
   ]
@@ -303,7 +313,7 @@ const ETAPES = [
   titre:"Le logarithme de base q",
   idee:"La nouveauté du chapitre : la base n’est plus forcément 10.",
   cours:[
-    "<span class=\"eq\">log<sub>q</sub>(b)</span> est l’exposant qu’il faut mettre sur <b>q</b> pour obtenir <b>b</b>.",
+    "<span class=\"eq\">log<sub>q</sub>(b)</span> — on lit « log base q de b » — est l’exposant qu’il faut mettre sur <b>q</b> pour obtenir <b>b</b>. Le petit q écrit en bas, c’est la base.",
     "<span class=\"eq\">log<sub>q</sub>(b) = x</span> signifie <span class=\"eq\">q<sup>x</sup> = b</span>. Le log décimal est simplement le cas q = 10.",
     "Tant que b est une puissance simple de q, ça se trouve de tête."
   ],
@@ -326,11 +336,12 @@ const ETAPES = [
      indice:"5 × 5 = 25, puis 25 × 5 = 125.",
      sol:["5 × 5 × 5 = 125 donc 5<sup>3</sup> = 125","log<sub>5</sub>(125) = 3"]},
 
-    {type:"num",
-     q:"Calcule <span class=\"m\">log<sub>4</sub>(16)</span>.", note:"sans calculatrice",
-     rep:2, tol:0.001,
-     indice:"4 × 4 = 16.",
-     sol:["4<sup>2</sup> = 16","log<sub>4</sub>(16) = 2"]},
+    {type:"qcm",
+     q:"<span class=\"m\">2<sup>6</sup> = 64</span> s’écrit aussi :",
+     choix:["log<sub>2</sub>(64) = 6","log<sub>6</sub>(64) = 2","log<sub>64</sub>(2) = 6"], bonne:0,
+     indice:"Dans log<sub>q</sub>(b) = x, le petit nombre écrit en bas est la base de la puissance, et le résultat du log est l’exposant.",
+     sol:["2<sup>6</sup> = 64","la base est 2, l’exposant est 6","donc log<sub>2</sub>(64) = 6",
+          "<span class=\"why\">Les deux écritures disent la même chose, lue dans l’autre sens.</span>"]},
 
     {type:"num",
      q:"Calcule <span class=\"m\">log<sub>2</sub>(1)</span>.", note:"sans calculatrice",
@@ -354,9 +365,9 @@ const ETAPES = [
   cours:[
     "Pour une base quelconque : <span class=\"eq\">log<sub>q</sub>(b) = log(b) / log(q)</span> — un log décimal divisé par un autre.",
     "Sur TI-83 : <kbd>LOG(b)</kbd> <kbd>÷</kbd> <kbd>LOG(q)</kbd>. C’est <b>la</b> formule du chapitre.",
-    "Elle marche pour toutes les bases, même pour un q plus petit que 1."
+    "Elle marche pour n’importe quelle base q, du moment que q est positif et différent de 1 — même pour un q plus petit que 1, comme 0,7."
   ],
-  tip:{t:"TI-83", h:"<kbd>LOG</kbd> <kbd>3</kbd> <kbd>0</kbd> <kbd>)</kbd> <kbd>÷</kbd> <kbd>LOG</kbd> <kbd>2</kbd> <kbd>)</kbd> — ferme bien chaque parenthèse avant de diviser."},
+  tip:{t:"TI-83", h:"<kbd>LOG</kbd> <kbd>3</kbd> <kbd>0</kbd> <kbd>)</kbd> <kbd>÷</kbd> <kbd>LOG</kbd> <kbd>2</kbd> <kbd>)</kbd> — ferme bien chaque parenthèse avant de diviser. Et sur la calculatrice, les décimaux se tapent avec un point : <kbd>1</kbd><kbd>.</kbd><kbd>5</kbd>, jamais 1,5."},
   exos:[
     {type:"qcm",
      q:"<span class=\"m\">log<sub>2</sub>(30)</span> se calcule avec :",
@@ -368,34 +379,34 @@ const ETAPES = [
     {type:"num",
      q:"Vérifie la formule : calcule <span class=\"m\">log(8) / log(2)</span>.", note:"tu dois retrouver le résultat de l’étape 2",
      rep:3, tol:0.011,
-     indice:"LOG(8) = 0,90309 et LOG(2) = 0,30103. Divise l’un par l’autre.",
-     sol:["log(8) / log(2) = 0,90309 / 0,30103","= 3","et on avait bien trouvé log<sub>2</sub>(8) = 3 de tête",
+     indice:"Tape LOG(8) puis divise par LOG(2). Les deux valeurs commencent par 0,…",
+     sol:["log(8) / log(2) ≈ 0,90309 / 0,30103","= 3","et on avait bien trouvé log<sub>2</sub>(8) = 3 de tête",
           "<span class=\"why\">La formule donne le même résultat : c’est la preuve qu’elle est juste.</span>"]},
 
     {type:"num",
      q:"Calcule <span class=\"m\">log<sub>2</sub>(30)</span>.", note:"arrondi au centième",
      rep:4.91, tol:0.011,
-     indice:"LOG(30)/LOG(2). Le résultat est entre 4 et 5, car 2⁴ = 16 et 2⁵ = 32.",
-     sol:["log<sub>2</sub>(30) = log(30) / log(2)","= 1,47712 / 0,30103","= 4,90689","≈ 4,91"]},
+     indice:"LOG(30) divisé par LOG(2). Le résultat doit tomber entre 4 et 5, car 2⁴ = 16 et 2⁵ = 32.",
+     sol:["log<sub>2</sub>(30) = log(30) / log(2)","≈ 1,47712 / 0,30103","≈ 4,90689","≈ 4,91"]},
 
     {type:"num",
      q:"Calcule <span class=\"m\">log<sub>3</sub>(100)</span>.", note:"arrondi au centième",
      rep:4.19, tol:0.011,
-     indice:"LOG(100)/LOG(3), et log(100) vaut exactement 2.",
-     sol:["log<sub>3</sub>(100) = log(100) / log(3)","= 2 / 0,47712","= 4,19181","≈ 4,19"]},
+     indice:"Même formule. Le log du haut, tu peux le trouver sans calculatrice : 100 est une puissance de 10.",
+     sol:["log<sub>3</sub>(100) = log(100) / log(3)","= 2 / 0,47712…","≈ 4,19181","≈ 4,19"]},
 
     {type:"num",
      q:"Calcule <span class=\"m\">log<sub>5</sub>(60)</span>.", note:"arrondi au centième",
      rep:2.54, tol:0.011,
-     indice:"LOG(60)/LOG(5) = 1,77815 / 0,69897.",
-     sol:["log<sub>5</sub>(60) = log(60) / log(5)","= 1,77815 / 0,69897","= 2,54396","≈ 2,54"]},
+     indice:"LOG(60) divisé par LOG(5). Contrôle d’ordre de grandeur : 5² = 25 et 5³ = 125, donc le résultat est entre 2 et 3.",
+     sol:["log<sub>5</sub>(60) = log(60) / log(5)","≈ 1,77815 / 0,69897","≈ 2,54396","≈ 2,54"]},
 
     {type:"num",
      q:"Calcule <span class=\"m\">log<sub>0,7</sub>(4)</span>.", note:"arrondi au centième", neg:true,
      rep:-3.89, tol:0.011,
-     indice:"LOG(4)/LOG(0.7). log(0,7) est négatif, donc le quotient aussi : n’oublie pas le signe.",
-     sol:["log<sub>0,7</sub>(4) = log(4) / log(0,7)","= 0,60206 / (−0,15490)","= −3,88672","≈ −3,89",
-          "<span class=\"why\">La base est plus petite que 1 : ses puissances diminuent, il faut donc un exposant négatif pour dépasser 1.</span>"]}
+     indice:"Même formule avec 0,7 en bas (tape 0.7 avec un point). Regarde le signe de LOG(0.7) avant de conclure.",
+     sol:["log<sub>0,7</sub>(4) = log(4) / log(0,7)","≈ 0,60206 / (−0,15490)","≈ −3,88672","≈ −3,89",
+          "<span class=\"why\">La base 0,7 est plus petite que 1 : ses puissances positives donnent des nombres plus petits que 1. Pour obtenir 4, qui est plus grand que 1, il faut un exposant négatif.</span>"]}
   ]
 },
 {
@@ -404,8 +415,8 @@ const ETAPES = [
   idee:"Les mêmes règles qu’en base 10, avec q à la place de 10.",
   cours:[
     "<span class=\"eq\">log<sub>q</sub>(q) = 1</span> et <span class=\"eq\">log<sub>q</sub>(1) = 0</span> : vrai quelle que soit la base.",
-    "<span class=\"eq\">log<sub>q</sub>(q<sup>n</sup>) = n</span> : l’exposant redescend, comme avec le log décimal.",
-    "<span class=\"eq\">log<sub>q</sub>(a × b) = log<sub>q</sub>(a) + log<sub>q</sub>(b)</span> : le produit devient une somme."
+    "<span class=\"eq\">log<sub>q</sub>(a<sup>n</sup>) = n × log<sub>q</sub>(a)</span> : l’exposant descend devant le log. Cas particulier : <span class=\"eq\">log<sub>q</sub>(q<sup>n</sup>) = n</span>.",
+    "<span class=\"eq\">log<sub>q</sub>(a × b) = log<sub>q</sub>(a) + log<sub>q</sub>(b)</span> et <span class=\"eq\">log<sub>q</sub>(a / b) = log<sub>q</sub>(a) − log<sub>q</sub>(b)</span> : le produit devient une somme, le quotient une différence."
   ],
   exos:[
     {type:"num",
@@ -416,17 +427,11 @@ const ETAPES = [
           "<span class=\"why\">log<sub>q</sub>(q) = 1 dans toutes les bases.</span>"]},
 
     {type:"num",
-     q:"Calcule <span class=\"m\">log<sub>5</sub>(1)</span>.", note:"sans calculatrice",
-     rep:0, tol:0.001,
-     indice:"La règle vue à l’étape 2 : le log de 1 vaut toujours la même chose.",
-     sol:["5<sup>0</sup> = 1","log<sub>5</sub>(1) = 0"]},
-
-    {type:"num",
      q:"Calcule <span class=\"m\">log<sub>2</sub>(2<sup>10</sup>)</span>.", note:"sans calculatrice",
      rep:10, tol:0.001,
-     indice:"La base et le nombre du dessous sont les mêmes : il ne reste que l’exposant.",
+     indice:"Le petit 2 écrit en bas (la base) et le 2 de 2<sup>10</sup> sont le même nombre : dans ce cas, il ne reste que l’exposant.",
      sol:["log<sub>q</sub>(q<sup>n</sup>) = n","log<sub>2</sub>(2<sup>10</sup>) = 10",
-          "<span class=\"why\">Contrôle : 2<sup>10</sup> = 1024, et log(1024)/log(2) = 10.</span>"]},
+          "<span class=\"why\">Contrôle : 2<sup>10</sup> = 1024, et log(1024) / log(2) = 10.</span>"]},
 
     {type:"num",
      q:"Calcule <span class=\"m\">log<sub>3</sub>(81)</span>.", note:"sans calculatrice",
@@ -437,16 +442,24 @@ const ETAPES = [
     {type:"qcm",
      q:"<span class=\"m\">log<sub>q</sub>(a × b)</span> est égal à :",
      choix:["log<sub>q</sub>(a) + log<sub>q</sub>(b)","log<sub>q</sub>(a) × log<sub>q</sub>(b)","log<sub>q</sub>(a) − log<sub>q</sub>(b)"], bonne:0,
-     indice:"Le logarithme transforme les produits en sommes.",
+     indice:"Le logarithme transforme les produits en sommes. La soustraction, elle, correspond à autre chose.",
      sol:["log<sub>q</sub>(a × b) = log<sub>q</sub>(a) + log<sub>q</sub>(b)",
-          "<span class=\"why\">Le produit devient une somme : c’est tout l’intérêt historique des logarithmes.</span>"]},
+          "la soustraction, c’est pour un quotient : log<sub>q</sub>(a / b) = log<sub>q</sub>(a) − log<sub>q</sub>(b)",
+          "<span class=\"why\">Le produit devient une somme, le quotient une différence.</span>"]},
 
     {type:"num",
      q:"Calcule <span class=\"m\">log<sub>2</sub>(8 × 4)</span> en utilisant la propriété.", note:"sans calculatrice",
      rep:5, tol:0.001,
-     indice:"log₂(8) = 3 et log₂(4) = 2 : additionne.",
+     indice:"Un produit dans le log devient une somme de deux logs : coupe log<sub>2</sub>(8 × 4) en deux morceaux que tu sais déjà calculer.",
      sol:["log<sub>2</sub>(8 × 4) = log<sub>2</sub>(8) + log<sub>2</sub>(4)","= 3 + 2","= 5",
-          "<span class=\"why\">Contrôle : 8 × 4 = 32 = 2<sup>5</sup> ✓</span>"]}
+          "<span class=\"why\">Contrôle : 8 × 4 = 32 = 2<sup>5</sup> ✓</span>"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>2</sub>(32 / 4)</span> en utilisant la propriété.", note:"sans calculatrice",
+     rep:3, tol:0.001,
+     indice:"Un quotient dans le log devient une soustraction de deux logs. Tu sais calculer log<sub>2</sub>(32) et log<sub>2</sub>(4).",
+     sol:["log<sub>2</sub>(32 / 4) = log<sub>2</sub>(32) − log<sub>2</sub>(4)","= 5 − 2","= 3",
+          "<span class=\"why\">Contrôle : 32 / 4 = 8 = 2<sup>3</sup> ✓</span>"]}
   ]
 },
 {
@@ -463,44 +476,44 @@ const ETAPES = [
     {type:"num",
      q:"Résous <span class=\"m\">2<sup>x</sup> = 32</span>.", note:"trouvable de tête",
      rep:5, tol:0.011,
-     indice:"2, 4, 8, 16, 32 : compte les étapes.",
+     indice:"2<sup>1</sup> = 2, 2<sup>2</sup> = 4, 2<sup>3</sup> = 8… continue jusqu’à tomber sur 32 : la réponse est l’exposant écrit en haut.",
      sol:["32 = 2<sup>5</sup>","x = log<sub>2</sub>(32) = 5",
-          "<span class=\"why\">À la calculatrice : LOG(32)/LOG(2) = 5.</span>"]},
+          "<span class=\"why\">À la calculatrice : LOG(32) / LOG(2) = 5.</span>"]},
 
     {type:"num",
      q:"Résous <span class=\"m\">1,5<sup>x</sup> = 20</span>.", note:"arrondi au centième",
      rep:7.39, tol:0.011,
-     indice:"x = log₁,₅(20) = LOG(20)/LOG(1.5).",
-     sol:["1,5<sup>x</sup> = 20","x = log<sub>1,5</sub>(20) = log(20) / log(1,5)","= 1,30103 / 0,17609","= 7,38838 ≈ 7,39",
+     indice:"La puissance est déjà seule : applique directement la formule de l’étape 3, avec 1,5 comme base (tape 1.5 avec un point).",
+     sol:["1,5<sup>x</sup> = 20","x = log<sub>1,5</sub>(20) = log(20) / log(1,5)","≈ 1,30103 / 0,17609","≈ 7,38838 ≈ 7,39",
           "<span class=\"why\">Vérification : 1,5<sup>7,39</sup> ≈ 20 ✓</span>"]},
 
     {type:"qcm",
      q:"Pour <span class=\"m\">12 × 1,5<sup>t</sup> = 60</span>, quelle est la toute première chose à faire ?",
      choix:["Diviser les deux membres par 12","Appliquer le log tout de suite","Soustraire 12 des deux membres"], bonne:0,
-     indice:"Le log ne traverse pas le facteur 12 : la puissance doit d’abord être seule.",
+     indice:"Le 12 multiplie la puissance. Pour l’enlever sans casser l’égalité, on fait l’opération inverse des deux côtés.",
      sol:["12 × 1,5<sup>t</sup> = 60","on divise les deux membres par 12","1,5<sup>t</sup> = 5",
           "<span class=\"why\">Seulement ensuite : t = log<sub>1,5</sub>(5).</span>"]},
 
     {type:"num",
      q:"Résous <span class=\"m\">12 × 1,5<sup>t</sup> = 60</span>.", note:"t arrondi au centième",
      rep:3.97, tol:0.011,
-     indice:"Après isolation : 1,5^t = 5, donc t = LOG(5)/LOG(1.5).",
-     sol:["12 × 1,5<sup>t</sup> = 60","1,5<sup>t</sup> = 60/12 = 5","t = log<sub>1,5</sub>(5) = log(5) / log(1,5)",
-          "= 0,69897 / 0,17609","t = 3,96936 ≈ 3,97",
-          "<span class=\"why\">Vérification : 12 × 1,5<sup>3,97</sup> ≈ 60 ✓</span>"]},
+     indice:"Commence comme au QCM juste au-dessus : fais disparaître le 12. Ensuite, tu es ramené à un exercice de l’étape 3.",
+     sol:["12 × 1,5<sup>t</sup> = 60","1,5<sup>t</sup> = 60 / 12 = 5","t = log<sub>1,5</sub>(5) = log(5) / log(1,5)",
+          "≈ 0,69897 / 0,17609","t ≈ 3,96936 ≈ 3,97",
+          "<span class=\"why\">Vérification : 12 × 1,5<sup>3,97</sup> ≈ 60 ✓ — appliquer le log tout de suite n’est pas interdit, mais il faut alors casser le produit log(12 × 1,5<sup>t</sup>) : plus long et plus risqué. On isole d’abord.</span>"]},
 
     {type:"num",
-     q:"Résous <span class=\"m\">5 × 3<sup>t</sup> = 405</span>.",
+     q:"Résous <span class=\"m\">5 × 3<sup>t</sup> = 405</span>.", note:"réponse exacte, sans calculatrice",
      rep:4, tol:0.011,
-     indice:"Divise d’abord par 5 : 3^t = 81. Et 81, c’est 3 puissance combien ?",
-     sol:["5 × 3<sup>t</sup> = 405","3<sup>t</sup> = 405/5 = 81","81 = 3<sup>4</sup>","t = 4"]},
+     indice:"Divise d’abord par 5. Tu tombes sur une puissance de 3 que tu as déjà croisée à l’étape 4.",
+     sol:["5 × 3<sup>t</sup> = 405","3<sup>t</sup> = 405 / 5 = 81","81 = 3<sup>4</sup>","t = 4"]},
 
     {type:"num",
      q:"Résous <span class=\"m\">100 × 0,85<sup>t</sup> = 40</span>.", note:"t arrondi au centième",
      rep:5.64, tol:0.011,
-     indice:"0,85^t = 40/100 = 0,4 puis t = LOG(0.4)/LOG(0.85). Les deux logs sont négatifs, le résultat est positif.",
-     sol:["100 × 0,85<sup>t</sup> = 40","0,85<sup>t</sup> = 40/100 = 0,4","t = log<sub>0,85</sub>(0,4) = log(0,4) / log(0,85)",
-          "= (−0,39794) / (−0,07058)","t = 5,63806 ≈ 5,64",
+     indice:"Isole d’abord la puissance. Tu obtiendras deux logs négatifs à diviser : un négatif divisé par un négatif donne un positif.",
+     sol:["100 × 0,85<sup>t</sup> = 40","0,85<sup>t</sup> = 40 / 100 = 0,4","t = log<sub>0,85</sub>(0,4) = log(0,4) / log(0,85)",
+          "≈ (−0,39794) / (−0,07058)","t ≈ 5,63806 ≈ 5,64",
           "<span class=\"why\">Deux nombres négatifs divisés donnent un résultat positif : normal, le temps avance.</span>"]}
   ]
 },
@@ -522,7 +535,7 @@ const ETAPES = [
      sol:["U(t) = 48 × 0,75<sup>t</sup>","à t = 0 : U(0) = 48 × 0,75<sup>0</sup> = 48 × 1 = 48","U<sub>0</sub> = 48 V"]},
 
     {type:"num",
-     q:"Identifie le coefficient multiplicateur <span class=\"m\">q</span>.",
+     q:"Identifie le coefficient multiplicateur <span class=\"m\">q</span>.", note:"c’est aussi la base du logarithme qu’on va utiliser",
      rep:0.75, tol:0.001,
      indice:"C’est le nombre élevé à la puissance t.",
      sol:["U(t) = 48 × 0,75<sup>t</sup>","q = 0,75"]},
@@ -530,30 +543,38 @@ const ETAPES = [
     {type:"qcm",
      q:"<span class=\"m\">q = 0,75</span> signifie qu’à chaque période la tension :",
      choix:["perd 25 %","perd 75 %","gagne 75 %"], bonne:0,
-     indice:"Multiplier par 0,75, c’est garder 75 % de la valeur. Ce qui reste perdu, c’est le complément.",
+     indice:"Multiplier par 0,75, c’est garder 75 % de la valeur. Ce qui est perdu, c’est le complément.",
      sol:["multiplier par 0,75 = garder 75 % de la tension","donc on en perd 25 % à chaque période",
-          "<span class=\"why\">Contrôle : U(1) = 48 × 0,75 = 36 V, et 48 − 36 = 12, soit bien 25 % de 48.</span>"]},
+          "<span class=\"why\">Contrôle : U(1) = 48 × 0,75 = 36 V, et 48 − 36 = 12, soit bien 25 % de 48. Dans l’autre sens : une baisse de 20 % donnerait q = 0,80.</span>"]},
 
     {type:"num",
-     q:"L’équation à résoudre est <span class=\"m\">48 × 0,75<sup>t</sup> = 12</span>. Isole la puissance : que vaut <span class=\"m\">0,75<sup>t</sup></span> ?",
+     q:"L’équation à résoudre est <span class=\"m\">48 × 0,75<sup>t</sup> = 12</span>. Isole la puissance : que vaut <span class=\"m\">0,75<sup>t</sup></span> ?", note:"en écriture décimale",
      rep:0.25, tol:0.001,
-     indice:"Divise les deux membres par 48. 12 ÷ 48 = 0,25.",
+     indice:"Le 48 multiplie la puissance : fais l’opération inverse des deux côtés, puis pose la division.",
      sol:["48 × 0,75<sup>t</sup> = 12","0,75<sup>t</sup> = 12 / 48","0,75<sup>t</sup> = 0,25"]},
 
     {type:"num",
      q:"Calcule <span class=\"m\">t</span>.", note:"arrondi au centième",
      rep:4.82, tol:0.011,
-     indice:"t = log₀,₇₅(0,25) = LOG(0.25)/LOG(0.75). Garde 12/48 en entier dans la calculatrice.",
+     indice:"La puissance est déjà seule : 0,75<sup>t</sup> = 0,25. C’est exactement la formule de l’étape 3, avec 0,75 comme base.",
      sol:["0,75<sup>t</sup> = 0,25","t = log<sub>0,75</sub>(0,25) = log(0,25) / log(0,75)",
-          "= (−0,60206) / (−0,12494)","t = 4,81884 ≈ 4,82",
-          "<span class=\"why\">Vérification : 48 × 0,75<sup>4,82</sup> = 12,00 V ✓</span>"]},
+          "≈ (−0,60206) / (−0,12494)","t ≈ 4,81884 ≈ 4,82 périodes",
+          "<span class=\"why\">Vérification : 48 × 0,75<sup>4,82</sup> ≈ 12,00 V ✓</span>"]},
+
+    {type:"qcm",
+     q:"On cherche maintenant quand <span class=\"m\">0,75<sup>t</sup> &lt; 0,25</span>. La réponse est :",
+     choix:["t &gt; 4,82","t &lt; 4,82","t = 4,82"], bonne:0,
+     indice:"La tension ne fait que baisser. Est-elle sous le seuil avant d’y arriver, ou après ?",
+     sol:["0,75<sup>t</sup> = 0,25 donne t ≈ 4,82","quand t grandit, 0,75<sup>t</sup> devient de plus en plus petit",
+          "donc 0,75<sup>t</sup> &lt; 0,25 pour t &gt; 4,82",
+          "<span class=\"why\">Base plus petite que 1 : on est sous le seuil APRÈS l’instant trouvé. On raisonne sur la situation, jamais mécaniquement.</span>"]},
 
     {type:"num",
      q:"Au bout de combien de <b>périodes entières</b> la tension est-elle passée sous 12 V ?",
      rep:5, tol:0.001,
-     indice:"t = 4,82 n’est pas entier. Calcule U(4) et U(5) pour trancher.",
-     sol:["U(4) = 48 × 0,75<sup>4</sup> = 15,19 V &gt; 12","U(5) = 48 × 0,75<sup>5</sup> = 11,39 V &lt; 12",
-          "le seuil est franchi pendant la 5<sup>e</sup> période",
+     indice:"t ≈ 4,82 n’est pas entier. Calcule U(4) et U(5) pour trancher.",
+     sol:["U(4) = 48 × 0,75<sup>4</sup> ≈ 15,19 V &gt; 12","U(5) = 48 × 0,75<sup>5</sup> ≈ 11,39 V &lt; 12",
+          "le seuil est franchi pendant la 5<sup>e</sup> période","il faut donc 5 périodes entières",
           "<span class=\"why\">Phrase à recopier : « La tension passe sous 12 V pour t ≈ 4,82 périodes, c’est-à-dire au cours de la 5<sup>e</sup> période. »</span>"]}
   ]
 }
@@ -903,12 +924,14 @@ function finEtape(){
   }else{
     d.innerHTML = '<p class="big">Chapitre terminé — les 6 étapes sont validées.</p>'
       + '<div class="recap"><h3>À savoir par cœur</h3><div>'
-      + 'log(b) = x ⇔ 10<sup>x</sup> = b<br>'
-      + 'log<sub>q</sub>(b) = x ⇔ q<sup>x</sup> = b<br>'
+      + 'log(b) = x, c’est pareil que 10<sup>x</sup> = b<br>'
+      + 'log<sub>q</sub>(b) = x, c’est pareil que q<sup>x</sup> = b<br>'
       + 'log<sub>q</sub>(b) = log(b) / log(q)<br>'
-      + 'log<sub>q</sub>(q) = 1 · log<sub>q</sub>(1) = 0 · log<sub>q</sub>(q<sup>n</sup>) = n<br>'
+      + 'log<sub>q</sub>(q) = 1 &nbsp;—&nbsp; log<sub>q</sub>(1) = 0 &nbsp;—&nbsp; log<sub>q</sub>(q<sup>n</sup>) = n<br>'
+      + 'log<sub>q</sub>(a<sup>n</sup>) = n × log<sub>q</sub>(a)<br>'
       + 'log<sub>q</sub>(a × b) = log<sub>q</sub>(a) + log<sub>q</sub>(b)<br>'
-      + 'U<sub>0</sub> × q<sup>t</sup> = S → q<sup>t</sup> = S/U<sub>0</sub> → t = log(S/U<sub>0</sub>) / log(q)'
+      + 'log<sub>q</sub>(a / b) = log<sub>q</sub>(a) − log<sub>q</sub>(b)<br>'
+      + 'U<sub>0</sub> × q<sup>t</sup> = S (S = le seuil) → q<sup>t</sup> = S / U<sub>0</sub> → t = log(S / U<sub>0</sub>) / log(q)'
       + '</div></div>'
       + '<p>Sur TI-83 : <kbd>LOG(b)</kbd> <kbd>÷</kbd> <kbd>LOG(q)</kbd> pour n’importe quelle base, et on vérifie toujours en remplaçant t dans U(t).</p>';
   }

@@ -25,7 +25,7 @@ Mauvaise réponse → un indice ; après deux erreurs, un bouton affiche la solu
 débloque la suite. Les exercices réussis restent affichés avec leur correction rédigée comme
 sur une copie.
 
-36 exercices : 29 saisies numériques et 7 QCM.
+38 exercices : 28 saisies numériques et 10 QCM.
 
 ## Vérification
 
