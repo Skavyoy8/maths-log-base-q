@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logarithme décimal &amp; logarithme de base q — entraînement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f3f1ea;
+  --panel:#fbfaf6;
+  --ink:#171b1f;
+  --ink-soft:#586169;
+  --rule:#d9d4c7;
+  --rule-strong:#b6ae9c;
+  --signal:#0c6b5c;
+  --signal-bg:#e3efeb;
+  --amber:#8f5406;
+  --amber-bg:#f6eedb;
+  --wrong:#9d2b1d;
+  --wrong-bg:#f7e7e3;
+  --grid:rgba(12,107,92,.13);
+  --focus:#0c6b5c;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#0d1115;
+    --panel:#151a20;
+    --ink:#dee5ea;
+    --ink-soft:#93a0aa;
+    --rule:#262f38;
+    --rule-strong:#3b4650;
+    --signal:#45c2a4;
+    --signal-bg:#10241f;
+    --amber:#dda44a;
+    --amber-bg:#251e10;
+    --wrong:#ef8c7c;
+    --wrong-bg:#2a1815;
+    --grid:rgba(69,194,164,.15);
+    --focus:#45c2a4;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  font-size:17px;
+  line-height:1.55;
+}
+.wrap{max-width:37rem;margin:0 auto;padding:0 1.15rem 4rem}
+
+/* ---------- en-tête : écran d'oscilloscope ---------- */
+.head{position:relative;padding:1.9rem 0 1.4rem;border-bottom:1px solid var(--rule)}
+.head .graticule{
+  position:absolute;inset:0.6rem -0.4rem 0.9rem;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:2.1rem 2.1rem;
+  opacity:.55;pointer-events:none;
+}
+.head>*{position:relative}
+.kicker{
+  margin:0 0 .35rem;font-family:"IBM Plex Mono",monospace;font-size:.78rem;
+  letter-spacing:.02em;color:var(--signal);
+}
+h1{
+  font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;
+  font-size:1.62rem;line-height:1.15;margin:0 0 .45rem;letter-spacing:-.015em;
+}
+.lede{margin:0;color:var(--ink-soft);font-size:.96rem}
+.lede b{color:var(--ink);font-weight:500;font-family:"IBM Plex Mono",monospace}
+
+/* ---------- règle graduée de progression ---------- */
+.scale{padding:1.25rem 0 .2rem}
+.scale ol{
+  list-style:none;margin:0;padding:0;display:flex;gap:.2rem;
+  position:relative;
+}
+.scale ol::before{
+  content:"";position:absolute;left:1.25rem;right:1.25rem;top:.72rem;
+  height:1px;background:var(--rule-strong);
+}
+.scale li{flex:1 1 0;min-width:0;position:relative;display:flex}
+.scale button{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;
+  background:none;border:0;padding:0 .05rem;cursor:pointer;color:var(--ink-soft);
+  font-family:inherit;
+}
+.scale button[disabled]{cursor:default;opacity:.55}
+.scale .dot{
+  width:1.45rem;height:1.45rem;border-radius:50%;
+  border:1px solid var(--rule-strong);background:var(--paper);
+  display:grid;place-items:center;
+  font-family:"IBM Plex Mono",monospace;font-size:.8rem;line-height:1;
+}
+.scale .lbl{font-size:.67rem;line-height:1.2;text-align:center;hyphens:auto}
+.scale .done .dot{background:var(--signal);border-color:var(--signal);color:var(--paper)}
+.scale .done .lbl,.scale .done{color:var(--ink)}
+.scale .now .dot{border-color:var(--signal);border-width:2px;color:var(--signal);font-weight:500}
+.scale .now{color:var(--signal)}
+.scale .now .lbl{font-weight:600}
+.caption{
+  margin:.85rem 0 0;font-family:"IBM Plex Mono",monospace;font-size:.76rem;
+  color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:.6rem;
+}
+
+/* ---------- étape ---------- */
+.step{padding-top:1.6rem}
+.step h2{
+  font-family:"Space Grotesk",system-ui,sans-serif;font-size:1.28rem;font-weight:700;
+  margin:0 0 .3rem;line-height:1.2;letter-spacing:-.01em;
+}
+.step h2 .n{color:var(--signal);font-family:"IBM Plex Mono",monospace;font-size:.85rem;font-weight:500;display:block;margin-bottom:.2rem}
+.idee{margin:0 0 1rem;color:var(--ink-soft);font-size:.95rem}
+.cours{
+  background:var(--panel);border-left:3px solid var(--signal);
+  border-top:1px solid var(--rule);border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  padding:.85rem 1rem;margin:0 0 .9rem;
+}
+.cours p{margin:0 0 .35rem}
+.cours p:last-child{margin-bottom:0}
+.situation{
+  border:1px dashed var(--rule-strong);padding:.8rem 1rem;margin:0 0 .9rem;
+  font-size:.95rem;background:var(--panel);
+}
+.tip{
+  display:flex;gap:.5rem;align-items:baseline;margin:0 0 1.4rem;
+  font-size:.86rem;color:var(--ink-soft);
+}
+.tip b{color:var(--amber);font-weight:500;font-family:"IBM Plex Mono",monospace;font-size:.78rem;white-space:nowrap}
+kbd{
+  font-family:"IBM Plex Mono",monospace;font-size:.82em;border:1px solid var(--rule-strong);
+  border-radius:3px;padding:.05em .3em;background:var(--panel);
+}
+.eq,.enonce .m{font-family:"IBM Plex Mono",monospace}
+
+/* ---------- exercices ---------- */
+.exo{border-top:1px solid var(--rule);padding:1.15rem 0 1.25rem}
+.exo.live{border-left:2px solid var(--signal);padding-left:.85rem;margin-left:-.85rem}
+.enonce{margin:0 0 .8rem;display:flex;gap:.6rem;align-items:baseline}
+.enonce .tag{
+  font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--signal);
+  flex:0 0 auto;padding-top:.12rem;
+}
+.enonce .q{flex:1}
+.note{display:block;color:var(--ink-soft);font-size:.85rem;margin-top:.2rem}
+sup{font-size:.72em}
+sub{font-size:.72em}
+
+.ansrow{display:flex;gap:.5rem;flex-wrap:wrap;margin-left:1.9rem}
+input[type=text]{
+  flex:1 1 8rem;min-width:7rem;font-family:"IBM Plex Mono",monospace;font-size:1.02rem;
+  padding:.5rem .6rem;border:1px solid var(--rule-strong);background:var(--panel);color:var(--ink);
+  border-radius:2px;
+}
+.btn{
+  font-family:"IBM Plex Sans",sans-serif;font-size:.92rem;font-weight:500;
+  padding:.5rem .95rem;border-radius:2px;cursor:pointer;
+  border:1px solid var(--signal);background:var(--signal);color:var(--paper);
+}
+.btn.ghost{background:none;color:var(--signal)}
+.btn.small{font-size:.85rem;padding:.35rem .7rem}
+.btn:hover{filter:brightness(1.08)}
+.choix{border:0;padding:0;margin:0 0 0 1.9rem;display:grid;gap:.4rem}
+.choix label{
+  display:flex;gap:.6rem;align-items:flex-start;cursor:pointer;
+  border:1px solid var(--rule);padding:.5rem .7rem;background:var(--panel);
+}
+.choix label:hover{border-color:var(--rule-strong)}
+.choix input{margin:.28rem 0 0;accent-color:var(--signal);flex:0 0 auto}
+.choix input:checked+span{font-weight:500}
+.actions{margin:.8rem 0 0 1.9rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.fb{margin:.7rem 0 0 1.9rem;font-size:.92rem}
+.fb.ko{color:var(--wrong);background:var(--wrong-bg);padding:.55rem .7rem;border-left:2px solid var(--wrong)}
+.fb:empty{display:none}
+
+/* ---------- correction ---------- */
+.corr{margin-left:1.9rem;border-left:2px solid var(--rule-strong);padding:.15rem 0 .15rem .8rem}
+.corr.ok{border-color:var(--signal)}
+.corr .head-c{
+  margin:0 0 .45rem;font-size:.8rem;font-family:"IBM Plex Mono",monospace;
+  color:var(--signal);
+}
+.corr.shown .head-c{color:var(--amber)}
+.sol{font-family:"IBM Plex Mono",monospace;font-size:.93rem;line-height:1.75}
+.sol div{margin:0}
+.sol .why{font-family:"IBM Plex Sans",sans-serif;font-size:.85rem;color:var(--ink-soft)}
+.repdone{margin:.5rem 0 0 1.9rem;font-size:.88rem;color:var(--ink-soft)}
+
+/* ---------- fin d'étape ---------- */
+.fin{border-top:1px solid var(--rule);margin-top:.4rem;padding-top:1.2rem}
+.fin p{margin:0 0 .8rem}
+.fin .big{font-family:"Space Grotesk",sans-serif;font-weight:500;font-size:1.05rem}
+.recap{background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--signal);padding:.9rem 1rem;margin:1rem 0}
+.recap h3{font-family:"Space Grotesk",sans-serif;font-size:1rem;margin:0 0 .5rem}
+.recap div{font-family:"IBM Plex Mono",monospace;font-size:.92rem;line-height:1.8}
+
+/* ---------- pied ---------- */
+footer{margin-top:3rem;border-top:1px solid var(--rule);padding-top:1rem;font-size:.84rem;color:var(--ink-soft)}
+footer p{margin:.5rem 0 0}
+.stock{font-family:"IBM Plex Mono",monospace;font-size:.76rem}
+
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media (max-width:26rem){
+  body{font-size:16px}
+  .scale .lbl{font-size:.6rem}
+  .ansrow,.choix,.actions,.fb,.corr,.repdone{margin-left:0}
+  .corr{padding-left:.7rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="head">
+  <div class="graticule" aria-hidden="true"></div>
+  <p class="kicker">Maths CIEL · DS du 23 septembre</p>
+  <h1>Logarithme décimal &amp; logarithme de base q</h1>
+  <p class="lede">De la base 10 à une base quelconque : <b>log<sub>q</sub>(b) = log(b) / log(q)</b>. Objectif : résoudre q<sup>x</sup> = b et dater un seuil.</p>
+</header>
+
+<nav class="scale" aria-label="Progression dans le chapitre">
+  <ol id="ticks"></ol>
+  <p class="caption" id="caption"></p>
+</nav>
+
+<main id="step"></main>
+
+<footer>
+  <button class="btn ghost small" id="reset" type="button">Tout recommencer</button>
+  <p>Les exercices réussis restent affichés avec leur correction : tu peux les recopier sur ta feuille.</p>
+  <p class="stock" id="stock"></p>
+</footer>
+
+</div>
+
+<script>
+/* =======================================================================
+   1. LES DONNÉES — étapes, cours, exercices.
+   Toutes les valeurs numériques ont été calculées et vérifiées en Python.
+   type:'num'  -> rep = réponse attendue, tol = tolérance d'arrondi
+   type:'qcm'  -> choix = propositions, bonne = index de la bonne réponse
+   ======================================================================= */
+const ETAPES = [
+{
+  jalon:"Base 10",
+  titre:"Le log décimal, c’est la base 10",
+  idee:"Rappel express du chapitre précédent : c’est le point de départ de tout le reste.",
+  cours:[
+    "Le logarithme décimal, c’est le logarithme <b>de base 10</b> : on l’écrit <span class=\"eq\">log(b)</span>, sans rien en indice.",
+    "<span class=\"eq\">log(b) = x</span> signifie <span class=\"eq\">10<sup>x</sup> = b</span>.",
+    "Sur les puissances de 10 ça se lit de tête ; sinon, touche <kbd>LOG</kbd>."
+  ],
+  exos:[
+    {type:"qcm",
+     q:"Quand on écrit <span class=\"m\">log(b)</span> sans rien préciser, la base est :",
+     choix:["10","2","e"], bonne:0,
+     indice:"Décimal vient de « dix ».",
+     sol:["log(b) = log<sub>10</sub>(b)","log(b) = x signifie 10<sup>x</sup> = b",
+          "<span class=\"why\">C’est la seule base qu’on écrit sans l’indiquer.</span>"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log(100)</span>.", note:"sans calculatrice",
+     rep:2, tol:0.001,
+     indice:"10 puissance combien donne 100 ?",
+     sol:["10<sup>2</sup> = 100","log(100) = 2"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log(1)</span>.", note:"attention, ce n’est pas 1",
+     rep:0, tol:0.001,
+     indice:"N’importe quel nombre à la puissance 0 vaut 1.",
+     sol:["10<sup>0</sup> = 1","log(1) = 0",
+          "<span class=\"why\">Vrai dans toutes les bases, on le réutilise à l’étape 4.</span>"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log(0,01)</span>.", note:"sans calculatrice", neg:true,
+     rep:-2, tol:0.001,
+     indice:"0,01 = 1/100, et 1/100 s’écrit 10 puissance −2.",
+     sol:["0,01 = 1/100 = 10<sup>−2</sup>","log(0,01) = −2",
+          "<span class=\"why\">Un nombre plus petit que 1 a toujours un log négatif.</span>"]},
+
+    {type:"qcm",
+     q:"Entre quels entiers se trouve <span class=\"m\">log(45)</span> ?",
+     choix:["0 et 1","1 et 2","2 et 3"], bonne:1,
+     indice:"45 est entre 10 et 100.",
+     sol:["10 &lt; 45 &lt; 100","10<sup>1</sup> &lt; 45 &lt; 10<sup>2</sup>","donc 1 &lt; log(45) &lt; 2"]},
+
+    {type:"num",
+     q:"Donne <span class=\"m\">log(45)</span> à la calculatrice.", note:"arrondi au centième",
+     rep:1.65, tol:0.005,
+     indice:"LOG(45) = 1,653… à arrondir à deux chiffres après la virgule.",
+     sol:["LOG(45) = 1,65321…","log(45) ≈ 1,65",
+          "<span class=\"why\">Bien entre 1 et 2 : l’encadrement est respecté.</span>"]}
+  ]
+},
+{
+  jalon:"Base q",
+  titre:"Le logarithme de base q",
+  idee:"La nouveauté du chapitre : la base n’est plus forcément 10.",
+  cours:[
+    "<span class=\"eq\">log<sub>q</sub>(b)</span> est l’exposant qu’il faut mettre sur <b>q</b> pour obtenir <b>b</b>.",
+    "<span class=\"eq\">log<sub>q</sub>(b) = x</span> signifie <span class=\"eq\">q<sup>x</sup> = b</span>. Le log décimal est simplement le cas q = 10.",
+    "Tant que b est une puissance simple de q, ça se trouve de tête."
+  ],
+  exos:[
+    {type:"qcm",
+     q:"Combien vaut <span class=\"m\">log<sub>2</sub>(8)</span> ?",
+     choix:["3","4","8","16"], bonne:0,
+     indice:"2 puissance combien donne 8 ?",
+     sol:["2 × 2 × 2 = 8 donc 2<sup>3</sup> = 8","log<sub>2</sub>(8) = 3"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>3</sub>(9)</span>.", note:"sans calculatrice",
+     rep:2, tol:0.001,
+     indice:"3 puissance combien donne 9 ?",
+     sol:["3<sup>2</sup> = 9","log<sub>3</sub>(9) = 2"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>5</sub>(125)</span>.", note:"sans calculatrice",
+     rep:3, tol:0.001,
+     indice:"5 × 5 = 25, puis 25 × 5 = 125.",
+     sol:["5 × 5 × 5 = 125 donc 5<sup>3</sup> = 125","log<sub>5</sub>(125) = 3"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>4</sub>(16)</span>.", note:"sans calculatrice",
+     rep:2, tol:0.001,
+     indice:"4 × 4 = 16.",
+     sol:["4<sup>2</sup> = 16","log<sub>4</sub>(16) = 2"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>2</sub>(1)</span>.", note:"sans calculatrice",
+     rep:0, tol:0.001,
+     indice:"2 puissance combien donne 1 ? Comme pour le log décimal.",
+     sol:["2<sup>0</sup> = 1","log<sub>2</sub>(1) = 0",
+          "<span class=\"why\">log<sub>q</sub>(1) = 0 dans n’importe quelle base.</span>"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>2</sub>(0,5)</span>.", note:"sans calculatrice", neg:true,
+     rep:-1, tol:0.001,
+     indice:"0,5 c’est 1/2, et 1/2 s’écrit 2 puissance −1.",
+     sol:["0,5 = 1/2 = 2<sup>−1</sup>","log<sub>2</sub>(0,5) = −1",
+          "<span class=\"why\">Même règle qu’en base 10 : en dessous de 1, le log est négatif.</span>"]}
+  ]
+},
+{
+  jalon:"La formule",
+  titre:"log<sub>q</sub>(b) = log(b) / log(q)",
+  idee:"La formule de changement de base : elle ramène toutes les bases à la touche LOG.",
+  cours:[
+    "Pour une base quelconque : <span class=\"eq\">log<sub>q</sub>(b) = log(b) / log(q)</span> — un log décimal divisé par un autre.",
+    "Sur TI-83 : <kbd>LOG(b)</kbd> <kbd>÷</kbd> <kbd>LOG(q)</kbd>. C’est <b>la</b> formule du chapitre.",
+    "Elle marche pour toutes les bases, même pour un q plus petit que 1."
+  ],
+  tip:{t:"TI-83", h:"<kbd>LOG</kbd> <kbd>3</kbd> <kbd>0</kbd> <kbd>)</kbd> <kbd>÷</kbd> <kbd>LOG</kbd> <kbd>2</kbd> <kbd>)</kbd> — ferme bien chaque parenthèse avant de diviser."},
+  exos:[
+    {type:"qcm",
+     q:"<span class=\"m\">log<sub>2</sub>(30)</span> se calcule avec :",
+     choix:["log(30) / log(2)","log(2) / log(30)","log(30) − log(2)"], bonne:0,
+     indice:"Le nombre dont on cherche le log en haut, la base en bas.",
+     sol:["log<sub>q</sub>(b) = log(b) / log(q)","log<sub>2</sub>(30) = log(30) / log(2)",
+          "<span class=\"why\">Si tu inverses, tu obtiens l’inverse du bon résultat.</span>"]},
+
+    {type:"num",
+     q:"Vérifie la formule : calcule <span class=\"m\">log(8) / log(2)</span>.", note:"tu dois retrouver le résultat de l’étape 2",
+     rep:3, tol:0.011,
+     indice:"LOG(8) = 0,90309 et LOG(2) = 0,30103. Divise l’un par l’autre.",
+     sol:["log(8) / log(2) = 0,90309 / 0,30103","= 3","et on avait bien trouvé log<sub>2</sub>(8) = 3 de tête",
+          "<span class=\"why\">La formule donne le même résultat : c’est la preuve qu’elle est juste.</span>"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>2</sub>(30)</span>.", note:"arrondi au centième",
+     rep:4.91, tol:0.011,
+     indice:"LOG(30)/LOG(2). Le résultat est entre 4 et 5, car 2⁴ = 16 et 2⁵ = 32.",
+     sol:["log<sub>2</sub>(30) = log(30) / log(2)","= 1,47712 / 0,30103","= 4,90689","≈ 4,91"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>3</sub>(100)</span>.", note:"arrondi au centième",
+     rep:4.19, tol:0.011,
+     indice:"LOG(100)/LOG(3), et log(100) vaut exactement 2.",
+     sol:["log<sub>3</sub>(100) = log(100) / log(3)","= 2 / 0,47712","= 4,19181","≈ 4,19"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>5</sub>(60)</span>.", note:"arrondi au centième",
+     rep:2.54, tol:0.011,
+     indice:"LOG(60)/LOG(5) = 1,77815 / 0,69897.",
+     sol:["log<sub>5</sub>(60) = log(60) / log(5)","= 1,77815 / 0,69897","= 2,54396","≈ 2,54"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>0,7</sub>(4)</span>.", note:"arrondi au centième", neg:true,
+     rep:-3.89, tol:0.011,
+     indice:"LOG(4)/LOG(0.7). log(0,7) est négatif, donc le quotient aussi : n’oublie pas le signe.",
+     sol:["log<sub>0,7</sub>(4) = log(4) / log(0,7)","= 0,60206 / (−0,15490)","= −3,88672","≈ −3,89",
+          "<span class=\"why\">La base est plus petite que 1 : ses puissances diminuent, il faut donc un exposant négatif pour dépasser 1.</span>"]}
+  ]
+},
+{
+  jalon:"Propriétés",
+  titre:"Les propriétés, vraies dans toutes les bases",
+  idee:"Les mêmes règles qu’en base 10, avec q à la place de 10.",
+  cours:[
+    "<span class=\"eq\">log<sub>q</sub>(q) = 1</span> et <span class=\"eq\">log<sub>q</sub>(1) = 0</span> : vrai quelle que soit la base.",
+    "<span class=\"eq\">log<sub>q</sub>(q<sup>n</sup>) = n</span> : l’exposant redescend, comme avec le log décimal.",
+    "<span class=\"eq\">log<sub>q</sub>(a × b) = log<sub>q</sub>(a) + log<sub>q</sub>(b)</span> : le produit devient une somme."
+  ],
+  exos:[
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>7</sub>(7)</span>.", note:"sans calculatrice",
+     rep:1, tol:0.001,
+     indice:"7 puissance combien donne 7 ?",
+     sol:["7<sup>1</sup> = 7","log<sub>7</sub>(7) = 1",
+          "<span class=\"why\">log<sub>q</sub>(q) = 1 dans toutes les bases.</span>"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>5</sub>(1)</span>.", note:"sans calculatrice",
+     rep:0, tol:0.001,
+     indice:"La règle vue à l’étape 2 : le log de 1 vaut toujours la même chose.",
+     sol:["5<sup>0</sup> = 1","log<sub>5</sub>(1) = 0"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>2</sub>(2<sup>10</sup>)</span>.", note:"sans calculatrice",
+     rep:10, tol:0.001,
+     indice:"La base et le nombre du dessous sont les mêmes : il ne reste que l’exposant.",
+     sol:["log<sub>q</sub>(q<sup>n</sup>) = n","log<sub>2</sub>(2<sup>10</sup>) = 10",
+          "<span class=\"why\">Contrôle : 2<sup>10</sup> = 1024, et log(1024)/log(2) = 10.</span>"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>3</sub>(81)</span>.", note:"sans calculatrice",
+     rep:4, tol:0.001,
+     indice:"Écris 81 comme une puissance de 3 : 3, 9, 27, 81…",
+     sol:["81 = 3 × 3 × 3 × 3 = 3<sup>4</sup>","log<sub>3</sub>(81) = log<sub>3</sub>(3<sup>4</sup>) = 4"]},
+
+    {type:"qcm",
+     q:"<span class=\"m\">log<sub>q</sub>(a × b)</span> est égal à :",
+     choix:["log<sub>q</sub>(a) + log<sub>q</sub>(b)","log<sub>q</sub>(a) × log<sub>q</sub>(b)","log<sub>q</sub>(a) − log<sub>q</sub>(b)"], bonne:0,
+     indice:"Le logarithme transforme les produits en sommes.",
+     sol:["log<sub>q</sub>(a × b) = log<sub>q</sub>(a) + log<sub>q</sub>(b)",
+          "<span class=\"why\">Le produit devient une somme : c’est tout l’intérêt historique des logarithmes.</span>"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">log<sub>2</sub>(8 × 4)</span> en utilisant la propriété.", note:"sans calculatrice",
+     rep:5, tol:0.001,
+     indice:"log₂(8) = 3 et log₂(4) = 2 : additionne.",
+     sol:["log<sub>2</sub>(8 × 4) = log<sub>2</sub>(8) + log<sub>2</sub>(4)","= 3 + 2","= 5",
+          "<span class=\"why\">Contrôle : 8 × 4 = 32 = 2<sup>5</sup> ✓</span>"]}
+  ]
+},
+{
+  jalon:"Résoudre",
+  titre:"Résoudre q^x = b",
+  idee:"À quoi sert tout ça : sortir l’inconnue de l’exposant.",
+  cours:[
+    "<span class=\"eq\">q<sup>x</sup> = b</span> se lit directement : <span class=\"eq\">x = log<sub>q</sub>(b) = log(b)/log(q)</span>.",
+    "S’il y a un facteur devant, on <b>isole la puissance avant</b> : 12 × 1,5<sup>t</sup> = 60 donne d’abord 1,5<sup>t</sup> = 5.",
+    "C’est l’erreur qui coûte le plus de points au DS."
+  ],
+  tip:{t:"Réflexe", h:"La puissance doit être <b>seule</b> d’un côté du signe égal avant d’écrire le moindre log."},
+  exos:[
+    {type:"num",
+     q:"Résous <span class=\"m\">2<sup>x</sup> = 32</span>.", note:"trouvable de tête",
+     rep:5, tol:0.011,
+     indice:"2, 4, 8, 16, 32 : compte les étapes.",
+     sol:["32 = 2<sup>5</sup>","x = log<sub>2</sub>(32) = 5",
+          "<span class=\"why\">À la calculatrice : LOG(32)/LOG(2) = 5.</span>"]},
+
+    {type:"num",
+     q:"Résous <span class=\"m\">1,5<sup>x</sup> = 20</span>.", note:"arrondi au centième",
+     rep:7.39, tol:0.011,
+     indice:"x = log₁,₅(20) = LOG(20)/LOG(1.5).",
+     sol:["1,5<sup>x</sup> = 20","x = log<sub>1,5</sub>(20) = log(20) / log(1,5)","= 1,30103 / 0,17609","= 7,38838 ≈ 7,39",
+          "<span class=\"why\">Vérification : 1,5<sup>7,39</sup> ≈ 20 ✓</span>"]},
+
+    {type:"qcm",
+     q:"Pour <span class=\"m\">12 × 1,5<sup>t</sup> = 60</span>, quelle est la toute première chose à faire ?",
+     choix:["Diviser les deux membres par 12","Appliquer le log tout de suite","Soustraire 12 des deux membres"], bonne:0,
+     indice:"Le log ne traverse pas le facteur 12 : la puissance doit d’abord être seule.",
+     sol:["12 × 1,5<sup>t</sup> = 60","on divise les deux membres par 12","1,5<sup>t</sup> = 5",
+          "<span class=\"why\">Seulement ensuite : t = log<sub>1,5</sub>(5).</span>"]},
+
+    {type:"num",
+     q:"Résous <span class=\"m\">12 × 1,5<sup>t</sup> = 60</span>.", note:"t arrondi au centième",
+     rep:3.97, tol:0.011,
+     indice:"Après isolation : 1,5^t = 5, donc t = LOG(5)/LOG(1.5).",
+     sol:["12 × 1,5<sup>t</sup> = 60","1,5<sup>t</sup> = 60/12 = 5","t = log<sub>1,5</sub>(5) = log(5) / log(1,5)",
+          "= 0,69897 / 0,17609","t = 3,96936 ≈ 3,97",
+          "<span class=\"why\">Vérification : 12 × 1,5<sup>3,97</sup> ≈ 60 ✓</span>"]},
+
+    {type:"num",
+     q:"Résous <span class=\"m\">5 × 3<sup>t</sup> = 405</span>.",
+     rep:4, tol:0.011,
+     indice:"Divise d’abord par 5 : 3^t = 81. Et 81, c’est 3 puissance combien ?",
+     sol:["5 × 3<sup>t</sup> = 405","3<sup>t</sup> = 405/5 = 81","81 = 3<sup>4</sup>","t = 4"]},
+
+    {type:"num",
+     q:"Résous <span class=\"m\">100 × 0,85<sup>t</sup> = 40</span>.", note:"t arrondi au centième",
+     rep:5.64, tol:0.011,
+     indice:"0,85^t = 40/100 = 0,4 puis t = LOG(0.4)/LOG(0.85). Les deux logs sont négatifs, le résultat est positif.",
+     sol:["100 × 0,85<sup>t</sup> = 40","0,85<sup>t</sup> = 40/100 = 0,4","t = log<sub>0,85</sub>(0,4) = log(0,4) / log(0,85)",
+          "= (−0,39794) / (−0,07058)","t = 5,63806 ≈ 5,64",
+          "<span class=\"why\">Deux nombres négatifs divisés donnent un résultat positif : normal, le temps avance.</span>"]}
+  ]
+},
+{
+  jalon:"Problème",
+  titre:"Situation complète, type DS",
+  idee:"Toute la méthode enchaînée sur un signal qui s’atténue.",
+  situation:"<b>Situation.</b> Un signal s’atténue à chaque période : <span class=\"eq\">U(t) = 48 × 0,75<sup>t</sup></span>, avec t en périodes et U en volts. On cherche quand la tension passe <b>sous 12 V</b>.",
+  cours:[
+    "Méthode : lire U<sub>0</sub> et q, écrire l’équation du seuil, isoler la puissance, calculer t avec <kbd>LOG</kbd>.",
+    "Puis vérifier en remplaçant t dans U(t), et interpréter en nombre de périodes.",
+    "On n’arrondit qu’à la fin."
+  ],
+  exos:[
+    {type:"num",
+     q:"Identifie la tension initiale <span class=\"m\">U<sub>0</sub></span>.", note:"en volts",
+     rep:48, tol:0.001,
+     indice:"C’est la valeur à t = 0, le nombre placé devant la puissance.",
+     sol:["U(t) = 48 × 0,75<sup>t</sup>","à t = 0 : U(0) = 48 × 0,75<sup>0</sup> = 48 × 1 = 48","U<sub>0</sub> = 48 V"]},
+
+    {type:"num",
+     q:"Identifie le coefficient multiplicateur <span class=\"m\">q</span>.",
+     rep:0.75, tol:0.001,
+     indice:"C’est le nombre élevé à la puissance t.",
+     sol:["U(t) = 48 × 0,75<sup>t</sup>","q = 0,75"]},
+
+    {type:"qcm",
+     q:"<span class=\"m\">q = 0,75</span> signifie qu’à chaque période la tension :",
+     choix:["perd 25 %","perd 75 %","gagne 75 %"], bonne:0,
+     indice:"Multiplier par 0,75, c’est garder 75 % de la valeur. Ce qui reste perdu, c’est le complément.",
+     sol:["multiplier par 0,75 = garder 75 % de la tension","donc on en perd 25 % à chaque période",
+          "<span class=\"why\">Contrôle : U(1) = 48 × 0,75 = 36 V, et 48 − 36 = 12, soit bien 25 % de 48.</span>"]},
+
+    {type:"num",
+     q:"L’équation à résoudre est <span class=\"m\">48 × 0,75<sup>t</sup> = 12</span>. Isole la puissance : que vaut <span class=\"m\">0,75<sup>t</sup></span> ?",
+     rep:0.25, tol:0.001,
+     indice:"Divise les deux membres par 48. 12 ÷ 48 = 0,25.",
+     sol:["48 × 0,75<sup>t</sup> = 12","0,75<sup>t</sup> = 12 / 48","0,75<sup>t</sup> = 0,25"]},
+
+    {type:"num",
+     q:"Calcule <span class=\"m\">t</span>.", note:"arrondi au centième",
+     rep:4.82, tol:0.011,
+     indice:"t = log₀,₇₅(0,25) = LOG(0.25)/LOG(0.75). Garde 12/48 en entier dans la calculatrice.",
+     sol:["0,75<sup>t</sup> = 0,25","t = log<sub>0,75</sub>(0,25) = log(0,25) / log(0,75)",
+          "= (−0,60206) / (−0,12494)","t = 4,81884 ≈ 4,82",
+          "<span class=\"why\">Vérification : 48 × 0,75<sup>4,82</sup> = 12,00 V ✓</span>"]},
+
+    {type:"num",
+     q:"Au bout de combien de <b>périodes entières</b> la tension est-elle passée sous 12 V ?",
+     rep:5, tol:0.001,
+     indice:"t = 4,82 n’est pas entier. Calcule U(4) et U(5) pour trancher.",
+     sol:["U(4) = 48 × 0,75<sup>4</sup> = 15,19 V &gt; 12","U(5) = 48 × 0,75<sup>5</sup> = 11,39 V &lt; 12",
+          "le seuil est franchi pendant la 5<sup>e</sup> période",
+          "<span class=\"why\">Phrase à recopier : « La tension passe sous 12 V pour t ≈ 4,82 périodes, c’est-à-dire au cours de la 5<sup>e</sup> période. »</span>"]}
+  ]
+}
+];
+
+/* =======================================================================
+   2. ÉTAT + SAUVEGARDE
+   ======================================================================= */
+const CLE = "ciel-log-base-q-v1";
+let stockageOk = true;
+
+function etatNeuf(){
+  return {
+    courant:0,
+    etapes: ETAPES.map(e => ({
+      statut: e.exos.map(()=> "attente"),   // "attente" | "ok" | "montre"
+      essais: e.exos.map(()=> 0)
+    }))
+  };
+}
+
+function charger(){
+  try{
+    const brut = localStorage.getItem(CLE);
+    if(!brut) return etatNeuf();
+    const d = JSON.parse(brut);
+    if(!d || !Array.isArray(d.etapes) || d.etapes.length !== ETAPES.length) return etatNeuf();
+    for(let i=0;i<ETAPES.length;i++){
+      if(!Array.isArray(d.etapes[i].statut) || d.etapes[i].statut.length !== ETAPES[i].exos.length) return etatNeuf();
+    }
+    if(typeof d.courant !== "number" || d.courant < 0 || d.courant >= ETAPES.length) d.courant = 0;
+    return d;
+  }catch(e){
+    stockageOk = false;
+    return etatNeuf();
+  }
+}
+
+function sauver(){
+  try{
+    localStorage.setItem(CLE, JSON.stringify(etat));
+  }catch(e){
+    stockageOk = false;
+    majStock();
+  }
+}
+
+function majStock(){
+  document.getElementById("stock").textContent = stockageOk
+    ? "Progression enregistrée sur cet appareil."
+    : "Stockage indisponible : l’appli fonctionne, mais la progression sera perdue en fermant l’onglet.";
+}
+
+let etat = charger();
+
+/* =======================================================================
+   3. OUTILS
+   ======================================================================= */
+// Accepte la virgule ET le point, tous les signes moins, les espaces des milliers.
+function lireNombre(saisie){
+  let s = String(saisie)
+    .replace(/[−–—‑‒˗]/g, "-")   // − – — ‑ ‒ ˗
+    .replace(/[\s   ']/g, "")                   // espaces, apostrophe milliers
+    .replace(",", ".")
+    .trim();
+  if(s === "") return null;
+  if(!/^[+-]?(\d+(\.\d*)?|\.\d+)$/.test(s)) return null;
+  const v = parseFloat(s);
+  return isNaN(v) ? null : v;
+}
+
+function etapeFinie(i){
+  return etat.etapes[i].statut.every(s => s !== "attente");
+}
+function derniereDebloquee(){
+  for(let i=0;i<ETAPES.length;i++) if(!etapeFinie(i)) return i;
+  return ETAPES.length - 1;
+}
+function totalReussis(){
+  return etat.etapes.reduce((n,e)=> n + e.statut.filter(s=>s==="ok").length, 0);
+}
+function totalExos(){
+  return ETAPES.reduce((n,e)=> n + e.exos.length, 0);
+}
+
+/* =======================================================================
+   4. AFFICHAGE
+   ======================================================================= */
+const elTicks = document.getElementById("ticks");
+const elCaption = document.getElementById("caption");
+const elStep = document.getElementById("step");
+
+function dessinerRegle(){
+  const max = derniereDebloquee();
+  elTicks.innerHTML = "";
+  ETAPES.forEach((e,i)=>{
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button";
+    const fini = etapeFinie(i);
+    if(fini) b.classList.add("done");
+    if(i === etat.courant){ b.classList.add("now"); b.setAttribute("aria-current","step"); }
+    const bloque = i > max;
+    if(bloque) b.disabled = true;
+    b.innerHTML = '<span class="dot">'+(fini && i!==etat.courant ? "✓" : (i+1))+'</span><span class="lbl">'+e.jalon+'</span>';
+    b.setAttribute("aria-label","Étape "+(i+1)+" : "+e.titre+(fini?" (terminée)":(bloque?" (pas encore accessible)":"")));
+    b.addEventListener("click", ()=>{ etat.courant = i; sauver(); dessiner(); });
+    li.appendChild(b);
+    elTicks.appendChild(li);
+  });
+  elCaption.textContent = "Étape " + (etat.courant+1) + " sur " + ETAPES.length
+    + " · " + totalReussis() + " exercice" + (totalReussis()>1?"s":"") + " réussi" + (totalReussis()>1?"s":"")
+    + " sur " + totalExos();
+}
+
+function blocCorrection(exo, statut){
+  const div = document.createElement("div");
+  div.className = "corr " + (statut === "ok" ? "ok" : "shown");
+  const h = document.createElement("p");
+  h.className = "head-c";
+  h.textContent = statut === "ok" ? "Juste — voici la rédaction attendue" : "Solution détaillée";
+  div.appendChild(h);
+  const sol = document.createElement("div");
+  sol.className = "sol";
+  sol.innerHTML = exo.sol.map(l => "<div>"+l+"</div>").join("");
+  div.appendChild(sol);
+  return div;
+}
+
+function enonceHTML(exo, i){
+  return '<p class="enonce"><span class="tag">'+(i+1)+'</span><span class="q">'+exo.q
+       + (exo.note ? '<span class="note">('+exo.note+')</span>' : '')
+       + '</span></p>';
+}
+
+function dessinerEtape(){
+  const e = ETAPES[etat.courant];
+  const st = etat.etapes[etat.courant];
+  elStep.innerHTML = "";
+
+  const art = document.createElement("article");
+  art.className = "step";
+
+  const h2 = document.createElement("h2");
+  h2.innerHTML = '<span class="n">Étape '+(etat.courant+1)+' sur '+ETAPES.length+'</span>'+e.titre;
+  art.appendChild(h2);
+
+  const idee = document.createElement("p");
+  idee.className = "idee";
+  idee.textContent = e.idee;
+  art.appendChild(idee);
+
+  if(e.situation){
+    const s = document.createElement("div");
+    s.className = "situation";
+    s.innerHTML = e.situation;
+    art.appendChild(s);
+  }
+
+  const cours = document.createElement("div");
+  cours.className = "cours";
+  cours.innerHTML = e.cours.map(l => "<p>"+l+"</p>").join("");
+  art.appendChild(cours);
+
+  if(e.tip){
+    const t = document.createElement("p");
+    t.className = "tip";
+    t.innerHTML = "<b>"+e.tip.t+"</b><span>"+e.tip.h+"</span>";
+    art.appendChild(t);
+  }
+
+  const zone = document.createElement("div");
+  art.appendChild(zone);
+  elStep.appendChild(art);
+
+  // exercices résolus, puis l'exercice actif (un seul à la fois)
+  let actif = -1;
+  for(let i=0;i<e.exos.length;i++){
+    if(st.statut[i] === "attente"){ actif = i; break; }
+    const sec = document.createElement("section");
+    sec.className = "exo";
+    sec.innerHTML = enonceHTML(e.exos[i], i);
+    if(e.exos[i].type === "qcm"){
+      const r = document.createElement("p");
+      r.className = "repdone";
+      r.innerHTML = "Réponse : <b>"+e.exos[i].choix[e.exos[i].bonne]+"</b>";
+      sec.appendChild(r);
+    }
+    sec.appendChild(blocCorrection(e.exos[i], st.statut[i]));
+    zone.appendChild(sec);
+  }
+
+  if(actif >= 0){
+    zone.appendChild(bulleActive(e.exos[actif], actif));
+  }else{
+    art.appendChild(finEtape());
+  }
+
+  dessinerRegle();
+
+  // focus + mise en vue de l'exercice actif
+  if(actif >= 0){
+    const champ = zone.querySelector(".live input");
+    if(champ) champ.focus({preventScroll:true});
+    const live = zone.querySelector(".live");
+    if(live && (actif > 0 || etat.courant > 0)){
+      const doux = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      live.scrollIntoView({behavior: doux ? "smooth" : "auto", block:"center"});
+    }
+  }
+}
+
+function bulleActive(exo, i){
+  const f = document.createElement("form");
+  f.className = "exo live";
+  f.noValidate = true;
+  f.innerHTML = enonceHTML(exo, i);
+
+  if(exo.type === "num"){
+    const row = document.createElement("div");
+    row.className = "ansrow";
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.setAttribute("inputmode", exo.neg ? "text" : "decimal");
+    inp.autocomplete = "off";
+    inp.autocapitalize = "off";
+    inp.spellcheck = false;
+    inp.setAttribute("aria-label","Ta réponse");
+    inp.placeholder = "ta réponse";
+    row.appendChild(inp);
+    const b = document.createElement("button");
+    b.type = "submit"; b.className = "btn"; b.textContent = "Vérifier";
+    row.appendChild(b);
+    f.appendChild(row);
+  }else{
+    const fs = document.createElement("fieldset");
+    fs.className = "choix";
+    exo.choix.forEach((c,k)=>{
+      const lab = document.createElement("label");
+      lab.innerHTML = '<input type="radio" name="qcm" value="'+k+'"><span>'+c+'</span>';
+      fs.appendChild(lab);
+    });
+    f.appendChild(fs);
+    const act = document.createElement("div");
+    act.className = "actions";
+    const b = document.createElement("button");
+    b.type = "submit"; b.className = "btn"; b.textContent = "Vérifier";
+    act.appendChild(b);
+    f.appendChild(act);
+  }
+
+  const fb = document.createElement("p");
+  fb.className = "fb";
+  fb.setAttribute("role","status");
+  fb.setAttribute("aria-live","polite");
+  f.appendChild(fb);
+
+  const zoneSol = document.createElement("div");
+  zoneSol.className = "actions";
+  f.appendChild(zoneSol);
+
+  const st = etat.etapes[etat.courant];
+  if(st.essais[i] >= 2) zoneSol.appendChild(boutonSolution(i));
+
+  const lancer = () => verifier(exo, i, f, fb, zoneSol);
+
+  f.addEventListener("submit", ev => { ev.preventDefault(); lancer(); });
+  // La touche Entrée valide, depuis le champ comme depuis un choix du QCM.
+  f.addEventListener("keydown", ev => {
+    if((ev.key === "Enter" || ev.keyCode === 13) && ev.target.tagName !== "BUTTON"){
+      ev.preventDefault();
+      lancer();
+    }
+  });
+  return f;
+}
+
+function boutonSolution(i){
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "btn ghost small";
+  b.textContent = "Montrer la solution";
+  b.addEventListener("click", ()=>{
+    etat.etapes[etat.courant].statut[i] = "montre";
+    sauver();
+    dessinerEtape();
+  });
+  return b;
+}
+
+function verifier(exo, i, form, fb, zoneSol){
+  const st = etat.etapes[etat.courant];
+  let juste = false, souci = null;
+
+  if(exo.type === "num"){
+    const inp = form.querySelector("input");
+    const v = lireNombre(inp.value);
+    if(v === null){
+      souci = "Écris un nombre. La virgule et le point marchent tous les deux (1,40 ou 1.40).";
+    }else{
+      juste = Math.abs(v - exo.rep) <= exo.tol;
+    }
+  }else{
+    const coche = form.querySelector("input[name=qcm]:checked");
+    if(!coche) souci = "Choisis une réponse avant de vérifier.";
+    else juste = Number(coche.value) === exo.bonne;
+  }
+
+  if(juste){
+    st.statut[i] = "ok";
+    sauver();
+    dessinerEtape();
+    return;
+  }
+
+  st.essais[i] = (st.essais[i] || 0) + 1;
+  sauver();
+
+  fb.className = "fb ko";
+  fb.innerHTML = souci
+    ? souci
+    : "<b>Pas encore.</b> Indice : " + exo.indice + " Réessaie.";
+
+  if(st.essais[i] >= 2 && !zoneSol.firstChild){
+    zoneSol.appendChild(boutonSolution(i));
+  }
+  const inp = form.querySelector("input[type=text]");
+  if(inp){ inp.focus(); inp.select(); }
+}
+
+function finEtape(){
+  const d = document.createElement("div");
+  d.className = "fin";
+  const dernier = etat.courant === ETAPES.length - 1;
+
+  if(!dernier){
+    d.innerHTML = '<p class="big">Étape terminée.</p><p>Les corrections ci-dessus restent disponibles : tu peux revenir dessus à tout moment avec la règle graduée en haut.</p>';
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "btn"; b.textContent = "Étape suivante →";
+    b.addEventListener("click", ()=>{
+      etat.courant = Math.min(etat.courant+1, ETAPES.length-1);
+      sauver();
+      dessiner();
+      window.scrollTo({top:0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+    });
+    d.appendChild(b);
+  }else{
+    d.innerHTML = '<p class="big">Chapitre terminé — les 6 étapes sont validées.</p>'
+      + '<div class="recap"><h3>À savoir par cœur</h3><div>'
+      + 'log(b) = x ⇔ 10<sup>x</sup> = b<br>'
+      + 'log<sub>q</sub>(b) = x ⇔ q<sup>x</sup> = b<br>'
+      + 'log<sub>q</sub>(b) = log(b) / log(q)<br>'
+      + 'log<sub>q</sub>(q) = 1 · log<sub>q</sub>(1) = 0 · log<sub>q</sub>(q<sup>n</sup>) = n<br>'
+      + 'log<sub>q</sub>(a × b) = log<sub>q</sub>(a) + log<sub>q</sub>(b)<br>'
+      + 'U<sub>0</sub> × q<sup>t</sup> = S → q<sup>t</sup> = S/U<sub>0</sub> → t = log(S/U<sub>0</sub>) / log(q)'
+      + '</div></div>'
+      + '<p>Sur TI-83 : <kbd>LOG(b)</kbd> <kbd>÷</kbd> <kbd>LOG(q)</kbd> pour n’importe quelle base, et on vérifie toujours en remplaçant t dans U(t).</p>';
+  }
+  return d;
+}
+
+function dessiner(){
+  dessinerEtape();
+  majStock();
+}
+
+document.getElementById("reset").addEventListener("click", ()=>{
+  if(!confirm("Effacer toute la progression et repartir de l’étape 1 ?")) return;
+  try{ localStorage.removeItem(CLE); }catch(e){ stockageOk = false; }
+  etat = etatNeuf();
+  dessiner();
+  window.scrollTo(0,0);
+});
+
+dessiner();
+</script>
+</body>
+</html>
